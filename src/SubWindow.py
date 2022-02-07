@@ -17,4 +17,5 @@ class SubWindow:
         self.id = self.counter
         self.tweet_count = tweet_count
 
-    
+    def __str__(self) -> str:
+        return "SubWindow, id: {} tweet count: {}".format(self.id, self.tweet_count)
