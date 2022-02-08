@@ -19,10 +19,11 @@ class Segment:
         self.user_set = set()       # no. of unique users that used this segment in current time window
         self.retweet_count = 0      # sum of retweet counts of all tweets containing this segment
         # self.followers_count = 0    # sum of followers count of all users using this segment
-        self.newsworthiness = 0     # measure of importance of segment calculated by Twevent's Q(s) values
+        self.burstiness = 0     # measure of importance of segment calculated by Twevent's Q(s) values
 
     def __str__(self):
-        return 'Segment:'+self.segment+', freq:'+str(self.freq)+', user_count:'+str(self.get_user_count())    
+        # return 'Segment:'+self.segment+', freq:'+str(self.freq)+', user_count:'+str(self.get_user_count())   
+        return "Segment: {}, freq: {}, burstiness: {}, user_count: {}".format(self.segment, self.freq, self.burstiness, self.user_set)
         
     def add_tweet(self, user_id, text, retweet_count):    
         self.user_set.add(user_id)
@@ -116,5 +117,6 @@ class TimeframeTweetSegmentor:
             self.TimeWindow.add_subwindow(sub_win)
 
 tf = TimeframeTweetSegmentor('../Data/enwiki-titles-unstemmed/enwiki-titles-unstemmed.txt', 3, 2)
-tf.create_subwindows(['../Data/unprocessed_data/sample.json',])
+tf.create_subwindows(['../Data/unprocessed_data/sample.json','../Data/unprocessed_data/sample.json'])
 tf.TimeWindow.create_prob_dict()
+tf.TimeWindow.get_bursty_segments()
