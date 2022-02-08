@@ -2,6 +2,9 @@
 
 
 
+from itertools import count
+
+
 class TimeWindow:
     """
         Defines current timewindow
@@ -15,3 +18,19 @@ class TimeWindow:
     def add_subwindow(self, subwindow):
         self.subWindows.append(subwindow)
         self.no_subwindows+=1
+
+    def create_prob_dict(self):
+        freq_dict = {}
+        total_tweet_count = 0
+        for sub_window in self.subWindows[:-1]:
+            total_tweet_count+=sub_window.tweet_count
+
+            for segment in sub_window.segments.keys():
+                if segment not in freq_dict.keys():
+                    freq_dict[segment] = 0
+                freq_dict[segment] += sub_window.segments[segment].freq
+        
+        for segment in freq_dict:
+            freq_dict[segment] /= total_tweet_count
+
+        self.segment_probabilities = freq_dict

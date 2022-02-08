@@ -25,9 +25,10 @@ class Segment:
         return 'Segment:'+self.segment+', freq:'+str(self.freq)+', user_count:'+str(self.get_user_count())    
         
     def add_tweet(self, user_id, text, retweet_count):    
-        self.tweets.append(text)
         self.user_set.add(user_id)
-        self.freq += 1
+        if text not in self.tweets:
+            self.tweets.append(text)
+            self.freq += 1
         self.retweet_count += retweet_count
         # self.followers_count += followers_count
         
@@ -116,3 +117,4 @@ class TimeframeTweetSegmentor:
 
 tf = TimeframeTweetSegmentor('../Data/enwiki-titles-unstemmed/enwiki-titles-unstemmed.txt', 3, 2)
 tf.create_subwindows(['../Data/unprocessed_data/sample.json',])
+tf.TimeWindow.create_prob_dict()
