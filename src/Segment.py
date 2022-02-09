@@ -8,11 +8,14 @@ def split_hashtag(hashtag):
     return ' '.join([m.group(0) for m in matches]).lower()
 
 class Segment:
+    counter = 0
     def __init__(self,segment):
         """
         segment           - string of words ex. 'steve jobs'
         """
         self.segment = segment
+        Segment.counter+=1
+        self.index = self.counter
         self.tweets = []            # list of tweets( text:str ) containing this segment in current time window
         
         self.freq = 0               # tweet-freq i.e. number of tweets containing this segment
@@ -20,10 +23,12 @@ class Segment:
         self.retweet_count = 0      # sum of retweet counts of all tweets containing this segment
         # self.followers_count = 0    # sum of followers count of all users using this segment
         self.burstiness = 0     # measure of importance of segment calculated by Twevent's Q(s) values
+        self.embeddings = []
+        
 
     def __str__(self):
         # return 'Segment:'+self.segment+', freq:'+str(self.freq)+', user_count:'+str(self.get_user_count())   
-        return "Segment: {}, freq: {}, burstiness: {}, user_count: {}".format(self.segment, self.freq, self.burstiness, self.user_set)
+        return "Segment Index: {}, Segment: {}, freq: {}, burstiness: {}, user_count: {} \n embeddings: {}\n".format(self.index, self.segment, self.freq, self.burstiness, self.user_set, self.embeddings)
         
     def add_tweet(self, user_id, text, retweet_count):    
         self.user_set.add(user_id)
@@ -117,6 +122,8 @@ class TimeframeTweetSegmentor:
             self.TimeWindow.add_subwindow(sub_win)
 
 tf = TimeframeTweetSegmentor('../Data/enwiki-titles-unstemmed/enwiki-titles-unstemmed.txt', 3, 2)
-tf.create_subwindows(['../Data/unprocessed_data/sample.json','../Data/unprocessed_data/sample.json'])
+tf.create_subwindows(['../Data/unprocessed_data/sample.json'])
 tf.TimeWindow.create_prob_dict()
-tf.TimeWindow.get_bursty_segments()
+tf.TimeWindow.subWindows[-1].get_bursty_segments()
+tf.TimeWindow.subWindows[-1].create_embeddings()
+tf.TimeWindow.subWindows[-1].get_word_embedding_vector("ottimes")

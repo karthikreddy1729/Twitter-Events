@@ -1,6 +1,5 @@
 from itertools import count
-from math import exp, sqrt, log10
-from scipy.stats import logistic
+import numpy as np
 
 class TimeWindow:
     """
@@ -38,14 +37,3 @@ class TimeWindow:
 
         self.segment_probabilities = freq_dict
 
-    def get_bursty_segments(self):
-        for segment in self.subWindows[-1].segments:
-            if segment not in self.segment_probabilities.keys():
-                mean = self.unseen_segment_prob * self.tweet_count
-                std_dev = sqrt(self.tweet_count * self.unseen_segment_prob * (1 - self.unseen_segment_prob))
-            else:
-                mean = self.segment_probabilities[segment] * self.tweet_count
-                std_dev = sqrt(self.tweet_count * self.segment_probabilities[segment] * (1 - self.segment_probabilities[segment]))
-            self.subWindows[-1].segments[segment].burstiness = logistic.cdf((10 * (self.subWindows[-1].segments[segment].freq - mean - std_dev)/(std_dev)))
-
-            print(self.subWindows[-1].segments[segment])
